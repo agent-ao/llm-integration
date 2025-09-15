@@ -1,27 +1,19 @@
 package service
 
 import (
-	"time"
-
-	"github.com/agent-ao/llm-integration/internal/model"
-	queue "github.com/agent-ao/llm-integration/internal/queue/pub"
-	"github.com/agent-ao/llm-integration/internal/repository"
+	"github.com/agent-ao/llm-integration/internal/domain"
 )
 
 type HealthService struct {
-	repo *repository.HealthRepo
 }
 
-func NewHealthService(repo *repository.HealthRepo) *HealthService {
-	return &HealthService{repo: repo}
+func NewHealthService() *HealthService {
+	return &HealthService{}
 }
 
-func (h *HealthService) GetHealthStatus() model.HealthStatus {
-	now := time.Now()
-	_ = h.repo.InsertHeartbeat(now) // Log to MongoDB
-	_ = queue.PublishHealthCheck()  // Push to RabbitMQ
+func (h *HealthService) GetHealthStatus() domain.HealthStatus {
 
-	return model.HealthStatus{
+	return domain.HealthStatus{
 		Status: "ok",
 		Uptime: "running",
 	}
